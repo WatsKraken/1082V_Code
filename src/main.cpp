@@ -48,7 +48,7 @@ void pre_auton(void) {
   autonNum = 1;
 }
 
-void spin_For(double time, motor Motor) {
+void spin_for(double time, motor Motor) {
     double timePassed = 0;
     while (timePassed < time) {
       Motor.spin(forward, 80, pct);
@@ -88,12 +88,12 @@ void autonomous(void) {
     pid.runPID(36, 2);
     turnPid.runTurnPID(180);
     clampPneumatics.set(true);
-    spin_For(2, belt);
+    spin_for(2, belt);
     turnPid.runTurnPID(-90/*.690067526*/);
     pid.runPID(24, 2);
     turnPid.runTurnPID(90);
     pid.runPID(24, 2);
-    spin_For(2, belt);
+    spin_for(2, belt);
     turnPid.runTurnPID(135);
     pid.runPID(24 * sqrt(2), 2);
     // pid.runPID(2 * sqrt(10), 2);
@@ -108,12 +108,12 @@ void autonomous(void) {
     pid.runPID(36, 2);
     turnPid.runTurnPID(180);
     clampPneumatics.set(true);
-    spin_For(2, belt);
+    spin_for(2, belt);
     turnPid.runTurnPID(90/*.690067526*/);
     pid.runPID(24, 2);
     turnPid.runTurnPID(-90);
     pid.runPID(24, 2);
-    spin_For(2, belt);
+    spin_for(2, belt);
     turnPid.runTurnPID(-135);
     pid.runPID(24 * sqrt(2), 2);
     Brain.Screen.print("Auton 2 (Red Right) completed.");
@@ -127,12 +127,12 @@ void autonomous(void) {
     pid.runPID(36, 2);
     turnPid.runTurnPID(180);
     clampPneumatics.set(true);
-    spin_For(2, belt);
+    spin_for(2, belt);
     turnPid.runTurnPID(-90/*.690067526*/);
     pid.runPID(24, 2);
     turnPid.runTurnPID(90);
     pid.runPID(24, 2);
-    spin_For(2, belt);
+    spin_for(2, belt);
     turnPid.runTurnPID(135);
     pid.runPID(24 * sqrt(2), 2);
 
@@ -146,12 +146,12 @@ void autonomous(void) {
     pid.runPID(36, 2);
     turnPid.runTurnPID(180);
     clampPneumatics.set(true);
-    spin_For(2, belt);
+    spin_for(2, belt);
     turnPid.runTurnPID(90/*.690067526*/);
     pid.runPID(24, 2);
     turnPid.runTurnPID(-90);
     pid.runPID(24, 2);
-    spin_For(2, belt);
+    spin_for(2, belt);
     turnPid.runTurnPID(-135);
     pid.runPID(24 * sqrt(2), 2);
 
@@ -165,7 +165,7 @@ void autonomous(void) {
     turnPid.runTurnPID(180);
     pid.runPID(24, 2);
     // belt.spinFor(2,sec);
-    spin_For(2, belt);
+    spin_for(2, belt);
     turnPid.runTurnPID(-90);
     pid.runPID(24, 2);
     turnPid.runTurnPID(0);
@@ -173,7 +173,7 @@ void autonomous(void) {
 
     //TEST THIS TO SEE IF IT DOES THEM AT THE SAME TIME
     pid.runPID(36, 2);
-    spin_For(10, belt);
+    spin_for(10, belt);
 
 
     // belt.spinFor(10,sec);
@@ -211,7 +211,7 @@ void usercontrol(void) {
   bool pressingBool = false;
   int distance = 0;
   while (1) {
-    
+
     //PID test controls
     if (!Controller1.ButtonX.pressing() && !Controller1.ButtonY.pressing()) {
       if (Controller1.ButtonB.pressing()) {
