@@ -211,17 +211,12 @@ void usercontrol(void) {
   bool pressingBool = false;
   int distance = 0;
   while (1) {
-
-    //PID test controls
-    if (Controller1.ButtonDown.pressing()) {
-      pid.stopPID();
-    }
     
+    //PID test controls
     if (!Controller1.ButtonX.pressing() && !Controller1.ButtonY.pressing()) {
       if (Controller1.ButtonB.pressing()) {
         printToConsole("PID running");
         pid.runPID(distance, 10);
-        wait(5, sec);
       } else if (Controller1.ButtonLeft.pressing() && Controller1.ButtonRight.pressing()) {
         distance = 0;
         printToConsole(distance);

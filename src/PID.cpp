@@ -2,6 +2,7 @@
 #include "vex.h"
 #include "motors.h"
 #include "PID.h"
+#include <fstream>
 
 //using namespace _PID;
     
@@ -26,17 +27,21 @@
         position = ((fabs(Left.position(vex::turns)) + fabs(Right.position(vex::turns))) / 2.0) * M_PI * 3.25;
         error = target - position;
 
-        printToConsole("Position: " << position);
+        printToConsole(/*"(kp * error) " <<*/ (kp * error));
+        // printToConsole("(ki * i) " << (ki * i));
+        // printToConsole("(kd * d) " << (kd * d));
+
+        //printToConsole("Position: " << position);
         // printToConsole("Left Side Turns: " << fabs(Tl.position(vex::turns)));
         // printToConsole("Right Side Turns: " << fabs(Tr.position(vex::turns)));
 
-        if (error == prev && position >= 3) {
+        /*if (error == prev && position >= 3) {
             printToConsole("The error is not changing. PID stopping.");
             Brain.Screen.print("The error is not changing. PID stopping.");
             stopPID();
             errorChanging = false;
             stop = true;
-        } 
+        } */
 
         i = i + error + (prev - error) / 2.0;
         d = error - prev;
@@ -51,11 +56,16 @@
             i = (i / fabs(i)) * 100;
         }
 
+        if ((error / fabs(error)) != (prev / fabs(prev))) {
+            stopPID();
+            printToConsole("smigma");
+        }
         
     }
 
     bool PID::isStopped() {
-        if (((Left.velocity(vex::rpm) + Right.velocity(vex::rpm))/2 <= 1 && fabs(position) >= 3) || ((!errorChanging) && (Left.velocity(vex::rpm) + Right.velocity(vex::rpm))/2 <= 1) || stop) return true;
+        //printToConsole(((Left.velocity(vex::rpm) + Right.velocity(vex::rpm))/2 <= 1));
+        if (((fabs(Left.velocity(vex::rpm)) + fabs(Right.velocity(vex::rpm)))/2 <= 1 && fabs(position) >= 3) || ((!errorChanging) && (Left.velocity(vex::rpm) + Right.velocity(vex::rpm))/2 <= 1) || stop) return true;
         else return false;
     }
 
@@ -66,6 +76,7 @@
         Left.setStopping(vex::coast);
         Right.setStopping(vex::coast);
         stop = true;
+        printToConsole("cringe");
     }
 
     double PID::kpUpdate(double addAmount) {
@@ -81,21 +92,24 @@
     void PID::runPID(double targetVal, double timeLimit)
     {
         reset();
-        target = targetVal;
+        target = targetVal / (M_PI - 1);
+        int negative = target / fabs(target);
+        target = fabs(target);
+
         while (fabs(position - target) > 0.2 && errorChanging) {
             update();
             //spinAll(true, (kp * error) + (ki * i) + (kd * d));
-            Left.spin(vex::forward, (kp * error) + (ki * i) + (kd * d), vex::pct);
-            Right.spin(vex::forward, (kp * error) + (ki * i) + (kd * d), vex::pct);
+            Left.spin(vex::forward, fabs((kp * error) + (ki * i) + (kd * d)) * (negative), vex::pct);
+            Right.spin(vex::forward, fabs((kp * error) + (ki * i) + (kd * d)) * (negative), vex::pct);
             if (isStopped()) { stopPID(); break; }
-            _time += 20;
-            vex::wait(20, vex::msec);
+            _time += 40;
+            vex::wait(40, vex::msec);
 
-            if (_time >= timeLimit * 1000) {
+            /*if (_time >= timeLimit * 1000) {
                 printToConsole("Time limit reached");
                 stopPID();
                 break;
-            }
+            }*/
         }
 
         vex::wait(20, vex::msec);
