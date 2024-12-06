@@ -27,7 +27,8 @@
         position = ((fabs(Left.position(vex::turns)) + fabs(Right.position(vex::turns))) / 2.0) * M_PI * 3.25;
         error = target - position;
 
-        printToConsole(/*"(kp * error) " <<*/ (kp * error));
+        printToConsole(fabs((kp * error) + (ki * i) + (kd * d)));
+        //printToConsole(/*"(kp * error) " <<*/ (kp * error));
         // printToConsole("(ki * i) " << (ki * i));
         // printToConsole("(kd * d) " << (kd * d));
 
@@ -58,7 +59,7 @@
 
         if ((error / fabs(error)) != (prev / fabs(prev))) {
             stopPID();
-            printToConsole("smigma");
+            printToConsole("error turned negative");
         }
         
     }
@@ -99,18 +100,24 @@
         while (fabs(position - target) > 0.2 && errorChanging) {
             update();
             //spinAll(true, (kp * error) + (ki * i) + (kd * d));
-            Left.spin(vex::forward, fabs((kp * error) + (ki * i) + (kd * d)) * (negative), vex::pct);
-            Right.spin(vex::forward, fabs((kp * error) + (ki * i) + (kd * d)) * (negative), vex::pct);
+            Left.spin(vex::forward, fabs((kp * pow(error,1.3)) + (ki * i) + (kd * d)) * (negative), vex::pct);
+            Right.spin(vex::forward, fabs((kp * pow(error,1.3)) + (ki * i) + (kd * d)) * (negative), vex::pct);
             if (isStopped()) { stopPID(); break; }
-            _time += 40;
-            vex::wait(40, vex::msec);
+            _time += 20;
+            vex::wait(20, vex::msec);
 
-            /*if (_time >= timeLimit * 1000) {
+            if (fabs((kp * error) + (ki * i) + (kd * d)) < 1) {
+                printToConsole("Too slow; saving time");
+                stopPID();
+                break;
+            }
+
+            if (_time >= timeLimit * 1000) {
                 printToConsole("Time limit reached");
                 stopPID();
                 break;
-            }*/
+            }
         }
-
+        printToConsole("time: " << _time);
         vex::wait(20, vex::msec);
     }

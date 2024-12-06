@@ -38,9 +38,10 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
-
+  RotationSensor.setReversed(true);
   Left.resetPosition();
   Right.resetPosition();
+  ladyBrown.resetPosition();
   InertialSensor.calibrate();
   while (InertialSensor.isCalibrating()) {
       wait(10, vex::msec);
@@ -54,15 +55,20 @@ void pre_auton(void) {
 }
 
 void spin_for(double time, motor Motor) {
-    double timePassed = 0;
-    while (timePassed < time) {
-      Motor.spin(forward, 80, pct);
-      timePassed += time / 1000;
-      wait(time, msec);
-    }
-    Motor.stop(brake);
+  double timePassed = 0;
+  while (timePassed < time) {
+    Motor.spin(forward, 80, pct);
+    timePassed += time / 1000;
+    wait(time, msec);
+  }
+  Motor.stop(brake);
 }
 
+void spinTo(double angle) {
+  while (RotationSensor.position(deg) < angle/1.8) {
+    ladyBrown.spin(forward, 10, pct);
+  }
+}
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -215,9 +221,23 @@ void usercontrol(void) {
   bool pneumaticsBool = false;
   bool pressingBool = false;
   int distance = 0;
+  bool lbBool = false;
+  RotationSensor.resetPosition();
+  ladyBrown.resetPosition();
   while (1) {
+    ladyBrown.setPosition(RotationSensor.position(deg), deg);
+    if (lbBool) {
+      if (RotationSensor.position(deg) < 17.5) {
+        // printToConsole("wowie");
+        printToConsole("motor " << ladyBrown.position(deg));
+        ladyBrown.spinTo(22, deg, 880, dps, true);
+        printToConsole("after " << RotationSensor.position(deg));
+        // belt.spinFor(2, sec);
+      }
+    }
 
-    printToConsole(RotationSensor.angle());
+    // printToConsole("lbBool " << lbBool);
+    // printToConsole("no conditional " << RotationSensor.position(deg)); //} if (false) { //isolating lady brown for testing
 
     //PID test controls
     if (!Controller1.ButtonX.pressing() && !Controller1.ButtonY.pressing()) {
@@ -328,13 +348,34 @@ void usercontrol(void) {
       pressingBool = false;
     }
 
-    if (Controller1.ButtonL1.pressing()) {
-      ladyBrown.spin(forward, 100, pct);
-    } else if (Controller1.ButtonL2.pressing()) {
-      ladyBrown.spin(reverse, 100, pct);
-    } else {
+
+    /*printToConsole("outside checks");
+    if (lbBool && RotationSensor.position(deg) > 17.5) {
+      printToConsole("brake");
       ladyBrown.stop(brake);
     }
+    if (lbBool && RotationSensor.position(deg) < 17.5) {
+        ladyBrown.spin(forward);
+    } else if (lbBool) {
+      lbBool = false;
+    }*/
+
+
+    if (Controller1.ButtonL1.pressing()) {
+      if (RotationSensor.position(deg) < 17.5) {
+          lbBool = true;
+          //ladyBrown.spin(forward,20,pct);
+      }  else {
+        lbBool = false;
+      }
+      if (!lbBool) { ladyBrown.spin(forward, 100, pct); }
+    } else if (Controller1.ButtonL2.pressing()) {
+      ladyBrown.spin(reverse, 100, pct);
+      if (RotationSensor.position(deg) > 17.5) { lbBool = false; }
+    } else {
+      if (RotationSensor.position(deg) < 17.5) ladyBrown.stop(coast);
+      else ladyBrown.stop(hold);
+    } 
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
