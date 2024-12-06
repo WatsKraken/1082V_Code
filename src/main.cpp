@@ -42,7 +42,12 @@ void pre_auton(void) {
   Left.resetPosition();
   Right.resetPosition();
   InertialSensor.calibrate();
+  while (InertialSensor.isCalibrating()) {
+      wait(10, vex::msec);
+  }
   InertialSensor.resetHeading();
+  
+  RotationSensor.resetPosition();
 
   //Set auton number for each time you upload the program
   autonNum = 1;
@@ -211,6 +216,8 @@ void usercontrol(void) {
   bool pressingBool = false;
   int distance = 0;
   while (1) {
+
+    printToConsole(RotationSensor.angle());
 
     //PID test controls
     if (!Controller1.ButtonX.pressing() && !Controller1.ButtonY.pressing()) {
