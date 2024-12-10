@@ -41,7 +41,7 @@ void pre_auton(void) {
   RotationSensor.setReversed(true);
   Left.resetPosition();
   Right.resetPosition();
-  ladyBrown.resetPosition();
+  manlySilverArm.resetPosition();
   InertialSensor.calibrate();
   while (InertialSensor.isCalibrating()) {
       wait(10, vex::msec);
@@ -51,7 +51,7 @@ void pre_auton(void) {
   RotationSensor.resetPosition();
 
   //Set auton number for each time you upload the program
-  autonNum = 3;
+  autonNum = 10;
 }
 
 void spin_for(double time, motor Motor) {
@@ -66,7 +66,7 @@ void spin_for(double time, motor Motor) {
 
 void spinTo(double angle) {
   while (RotationSensor.position(deg) < angle/1.8) {
-    ladyBrown.spin(forward, 10, pct);
+    manlySilverArm.spin(forward, 10, pct);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -175,10 +175,11 @@ void autonomous(void) {
     // pid.runPID(2 * sqrt(10));
     Brain.Screen.print("Auton 4 (Blue Right) completed.");
   } else if (autonNum == 10) {
+    //set up backwards
     pid.runPID(-6, 2);
-    clampPneumatics.set(true);
+    clampPneumatics.set(false);
     pid.runPID(-6, 2);
-    turnPid.runTurnPID(180);
+    turnPid.runTurnPID(165);
     pid.runPID(24, 2);
     // belt.spinFor(2,sec);
     spin_for(2, belt);
@@ -228,21 +229,21 @@ void usercontrol(void) {
   int distance = 0;
   bool lbBool = false;
   RotationSensor.resetPosition();
-  ladyBrown.resetPosition();
+  manlySilverArm.resetPosition();
   while (1) {
-    ladyBrown.setPosition(RotationSensor.position(deg), deg);
+    manlySilverArm.setPosition(RotationSensor.position(deg), deg);
     if (lbBool) {
       if (RotationSensor.position(deg) < 17.5) {
         // printToConsole("wowie");
-        printToConsole("motor " << ladyBrown.position(deg));
-        ladyBrown.spinTo(22, deg, 880, dps, true);
+        printToConsole("motor " << manlySilverArm.position(deg));
+        manlySilverArm.spinTo(22, deg, 880, dps, true);
         printToConsole("after " << RotationSensor.position(deg));
         // belt.spinFor(2, sec);
       }
     }
 
     // printToConsole("lbBool " << lbBool);
-    // printToConsole("no conditional " << RotationSensor.position(deg)); //} if (false) { //isolating lady brown for testing
+    printToConsole("no conditional " << RotationSensor.position(deg)); //} if (false) { //isolating lady brown for testing
 
     //PID test controls
     /*if (!Controller1.ButtonX.pressing() && !Controller1.ButtonY.pressing()) {
@@ -358,10 +359,10 @@ void usercontrol(void) {
     /*printToConsole("outside checks");
     if (lbBool && RotationSensor.position(deg) > 17.5) {
       printToConsole("brake");
-      ladyBrown.stop(brake);
+      manlySilverArm.stop(brake);
     }
     if (lbBool && RotationSensor.position(deg) < 17.5) {
-        ladyBrown.spin(forward);
+        manlySilverArm.spin(forward);
     } else if (lbBool) {
       lbBool = false;
     }*/
@@ -370,17 +371,17 @@ void usercontrol(void) {
     if (Controller1.ButtonL1.pressing()) {
       if (RotationSensor.position(deg) < 17.5) {
           lbBool = true;
-          //ladyBrown.spin(forward,20,pct);
+          //manlySilverArm.spin(forward,20,pct);
       }  else {
         lbBool = false;
       }
-      if (!lbBool) { ladyBrown.spin(forward, 100, pct); }
+      if (!lbBool) { manlySilverArm.spin(forward, 100, pct); }
     } else if (Controller1.ButtonL2.pressing()) {
-      ladyBrown.spin(reverse, 100, pct);
+      manlySilverArm.spin(reverse, 100, pct);
       if (RotationSensor.position(deg) > 17.5) { lbBool = false; }
     } else {
-      if (RotationSensor.position(deg) < 17.5) ladyBrown.stop(coast);
-      else ladyBrown.stop(hold);
+      if (RotationSensor.position(deg) < 17.5) manlySilverArm.stop(coast);
+      else manlySilverArm.stop(hold);
     } 
     // ........................................................................
     // Insert user code here. This is where you use the joystick values to
