@@ -28,9 +28,9 @@ class PID
     double i; // integral
     double d;
     int target;
-    double kp = 0.5;
+    double kp = 2;
     double ki = 0;
-    double kd = 0.1;
+    double kd = 1;
     double drive;
     void runPID();
     double prev;

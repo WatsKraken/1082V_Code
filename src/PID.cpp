@@ -100,8 +100,8 @@
         while (fabs(position - target) > 0.2 && errorChanging) {
             update();
             //spinAll(true, (kp * error) + (ki * i) + (kd * d));
-            Left.spin(vex::forward, fabs((kp * pow(error,1.3)) + (ki * i) + (kd * d)) * (negative), vex::pct);
-            Right.spin(vex::forward, fabs((kp * pow(error,1.3)) + (ki * i) + (kd * d)) * (negative), vex::pct);
+            Left.spin(vex::forward, fabs((kp * (target - pow(position, 1.3))) + (ki * i) + (kd * d)) * (negative) * 1.7, vex::pct);
+            Right.spin(vex::forward, fabs((kp * (target - pow(position, 1.3))) + (ki * i) + (kd * d)) * (negative) * 1.7, vex::pct);
             if (isStopped()) { stopPID(); break; }
             _time += 20;
             vex::wait(20, vex::msec);

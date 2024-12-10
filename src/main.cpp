@@ -51,7 +51,7 @@ void pre_auton(void) {
   RotationSensor.resetPosition();
 
   //Set auton number for each time you upload the program
-  autonNum = 1;
+  autonNum = 3;
 }
 
 void spin_for(double time, motor Motor) {
@@ -80,31 +80,33 @@ void spinTo(double angle) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  clampPneumatics.set(false);
 
-  /*InertialSensor.calibrate();
+  InertialSensor.calibrate();
   while (InertialSensor.isCalibrating()) {
       wait(10, vex::msec);
   }
-  InertialSensor.resetHeading();*/
+  InertialSensor.resetHeading();
 
-  wait(3000, msec);
+  // wait(3000, msec);
   Brain.Screen.print(autonNum);
+  clampPneumatics.set(true);
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
+  spin_for(0.5, belt);
   if (autonNum == 1) {
     // Red left
 
-    pid.runPID(36, 2);
-    turnPid.runTurnPID(180);
-    clampPneumatics.set(true);
+    turnPid.runTurnPID(165);
+    pid.runPID(-56, 2);
+    // turnPid.runTurnPID(150);
+    clampPneumatics.set(false);
     spin_for(2, belt);
     turnPid.runTurnPID(-90/*.690067526*/);
     pid.runPID(24, 2);
+    spin_for(2, belt);
     turnPid.runTurnPID(90);
     pid.runPID(24, 2);
-    spin_for(2, belt);
     turnPid.runTurnPID(135);
     pid.runPID(24 * sqrt(2), 2);
     // pid.runPID(2 * sqrt(10), 2);
@@ -116,15 +118,16 @@ void autonomous(void) {
     // pid.runPID(43.2/2);
     // belt.spinFor(2, sec);
     
-    pid.runPID(36, 2);
-    turnPid.runTurnPID(180);
-    clampPneumatics.set(true);
+    turnPid.runTurnPID(165);
+    pid.runPID(-56, 2);
+    // turnPid.runTurnPID(150);
+    clampPneumatics.set(false);
     spin_for(2, belt);
     turnPid.runTurnPID(90/*.690067526*/);
     pid.runPID(24, 2);
+    spin_for(2, belt);
     turnPid.runTurnPID(-90);
     pid.runPID(24, 2);
-    spin_for(2, belt);
     turnPid.runTurnPID(-135);
     pid.runPID(24 * sqrt(2), 2);
     Brain.Screen.print("Auton 2 (Red Right) completed.");
@@ -135,15 +138,16 @@ void autonomous(void) {
     // turnPid.runTurnPID(-33.690067526);
     // pid.runPID(43.2);
     
-    pid.runPID(36, 2);
-    turnPid.runTurnPID(180);
-    clampPneumatics.set(true);
+    // turnPid.runTurnPID(165);
+    pid.runPID(-56, 2);
+    // turnPid.runTurnPID(150);
+    clampPneumatics.set(false);
     spin_for(2, belt);
     turnPid.runTurnPID(-90/*.690067526*/);
     pid.runPID(24, 2);
+    spin_for(2, belt);
     turnPid.runTurnPID(90);
     pid.runPID(24, 2);
-    spin_for(2, belt);
     turnPid.runTurnPID(135);
     pid.runPID(24 * sqrt(2), 2);
 
@@ -154,15 +158,16 @@ void autonomous(void) {
     // turnPid.runTurnPID(33.690067526);
     // pid.runPID(43.2/2);
     // belt.spinFor(2, sec);
-    pid.runPID(36, 2);
-    turnPid.runTurnPID(180);
-    clampPneumatics.set(true);
+    turnPid.runTurnPID(165);
+    pid.runPID(-56, 2);
+    // turnPid.runTurnPID(150);
+    clampPneumatics.set(false);
     spin_for(2, belt);
     turnPid.runTurnPID(90/*.690067526*/);
     pid.runPID(24, 2);
+    spin_for(2, belt);
     turnPid.runTurnPID(-90);
     pid.runPID(24, 2);
-    spin_for(2, belt);
     turnPid.runTurnPID(-135);
     pid.runPID(24 * sqrt(2), 2);
 
@@ -240,7 +245,7 @@ void usercontrol(void) {
     // printToConsole("no conditional " << RotationSensor.position(deg)); //} if (false) { //isolating lady brown for testing
 
     //PID test controls
-    if (!Controller1.ButtonX.pressing() && !Controller1.ButtonY.pressing()) {
+    /*if (!Controller1.ButtonX.pressing() && !Controller1.ButtonY.pressing()) {
       if (Controller1.ButtonB.pressing()) {
         printToConsole("PID running");
         pid.runPID(distance, 10);
@@ -289,7 +294,7 @@ void usercontrol(void) {
         printToConsole(pid.kdUpdate(0));
         wait(0.1, sec);
       }
-    }
+    }*/
   
     // printToConsole(((fabs(Left.position(vex::turns)) + fabs(Right.position(vex::turns))) / 2.0));
 
@@ -341,6 +346,7 @@ void usercontrol(void) {
       if (pressingBool == false) {
         pneumaticsBool = !pneumaticsBool;
         clampPneumatics.set(pneumaticsBool);
+        printToConsole(pneumaticsBool);
       }
       pressingBool = true;
     } else {
