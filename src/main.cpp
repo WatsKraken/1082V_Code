@@ -64,6 +64,16 @@ void spin_for(double time, motor Motor) {
   Motor.stop(brake);
 }
 
+void spin_for_rev(double time, motor Motor, double _pct) {
+  double timePassed = 0;
+  while (timePassed < time) {
+    Motor.spin(reverse, _pct, pct);
+    timePassed += time / 1000;
+    wait(time, msec);
+  }
+  Motor.stop(brake);
+}
+
 void spinTo(double angle) {
   while (RotationSensor.position(deg) < angle/1.8) {
     manlySilverArm.spin(forward, 10, pct);
@@ -89,7 +99,7 @@ void autonomous(void) {
 
   // wait(3000, msec);
   Brain.Screen.print(autonNum);
-  clampPneumatics.set(true);
+  clampPneumatics.set(false);
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
@@ -100,7 +110,7 @@ void autonomous(void) {
     turnPid.runTurnPID(165);
     pid.runPID(-56, 2);
     // turnPid.runTurnPID(150);
-    clampPneumatics.set(false);
+    clampPneumatics.set(true);
     spin_for(2, belt);
     turnPid.runTurnPID(-90/*.690067526*/);
     pid.runPID(24, 2);
@@ -121,7 +131,7 @@ void autonomous(void) {
     turnPid.runTurnPID(165);
     pid.runPID(-56, 2);
     // turnPid.runTurnPID(150);
-    clampPneumatics.set(false);
+    clampPneumatics.set(true);
     spin_for(2, belt);
     turnPid.runTurnPID(90/*.690067526*/);
     pid.runPID(24, 2);
@@ -138,10 +148,10 @@ void autonomous(void) {
     // turnPid.runTurnPID(-33.690067526);
     // pid.runPID(43.2);
     
-    // turnPid.runTurnPID(165);
+    turnPid.runTurnPID(165);
     pid.runPID(-56, 2);
     // turnPid.runTurnPID(150);
-    clampPneumatics.set(false);
+    clampPneumatics.set(true);
     spin_for(2, belt);
     turnPid.runTurnPID(-90/*.690067526*/);
     pid.runPID(24, 2);
@@ -161,7 +171,7 @@ void autonomous(void) {
     turnPid.runTurnPID(165);
     pid.runPID(-56, 2);
     // turnPid.runTurnPID(150);
-    clampPneumatics.set(false);
+    clampPneumatics.set(true);
     spin_for(2, belt);
     turnPid.runTurnPID(90/*.690067526*/);
     pid.runPID(24, 2);
@@ -177,20 +187,21 @@ void autonomous(void) {
   } else if (autonNum == 10) {
     //set up backwards
     pid.runPID(-6, 2);
-    clampPneumatics.set(false);
+    clampPneumatics.set(true);
     pid.runPID(-6, 2);
-    turnPid.runTurnPID(165);
+    spin_for(1, belt);
+    turnPid.runTurnPID(180);
     pid.runPID(24, 2);
     // belt.spinFor(2,sec);
     spin_for(2, belt);
-    turnPid.runTurnPID(-90);
+    // turnPid.runTurnPID(-90);
     pid.runPID(24, 2);
     turnPid.runTurnPID(0);
 
 
     //TEST THIS TO SEE IF IT DOES THEM AT THE SAME TIME
-    pid.runPID(36, 2);
     spin_for(10, belt);
+    pid.runPID(36, 2);
 
 
     // belt.spinFor(10,sec);
@@ -199,7 +210,7 @@ void autonomous(void) {
     pid.runPID(12, 2);
     turnPid.runTurnPID(180+26.5650511771);
     pid.runPID(-12, 2);
-    clampPneumatics.set(false);
+    clampPneumatics.set(true);
   } else if (autonNum == 5) {
     // wait(4, sec);
     // Left.spinFor(1, sec);
@@ -227,12 +238,17 @@ void usercontrol(void) {
   bool pneumaticsBool = false;
   bool pressingBool = false;
   int distance = 0;
-  bool lbBool = false;
+  bool mSABool = false;
+  bool ready = false;
+  int time = 0;
+  int time2 = 0;
+  bool runTime = false;
+  bool runTime2 = false;
   RotationSensor.resetPosition();
   manlySilverArm.resetPosition();
   while (1) {
     manlySilverArm.setPosition(RotationSensor.position(deg), deg);
-    if (lbBool) {
+    if (mSABool) {
       if (RotationSensor.position(deg) < 17.5) {
         // printToConsole("wowie");
         printToConsole("motor " << manlySilverArm.position(deg));
@@ -242,8 +258,47 @@ void usercontrol(void) {
       }
     }
 
-    // printToConsole("lbBool " << lbBool);
-    printToConsole("no conditional " << RotationSensor.position(deg)); //} if (false) { //isolating lady brown for testing
+    if (RotationSensor.position(deg) >= 17) {
+        ready = true;
+    } else {
+      ready = false;
+    }
+
+    if (OpticalSensor.isNearObject()) {
+      runTime = true;
+    }
+
+    if (runTime) {
+      time += 20;
+    }
+    
+    if (runTime2) {
+      time2 += 20;
+    }
+
+    if (ready && time >= 500) {
+      spin_for_rev(1, belt, 6);
+      printToConsole("spin backwards");
+      ready = false;
+      runTime = false;
+      time2 = 0;
+      runTime2 = true;
+      time = 0;
+    }
+
+    if (time2 >= 500) {
+      belt.stop(coast);
+      runTime2 = false;
+      time2 = 0;
+    }
+
+
+
+    printToConsole("time: " << time);
+    printToConsole("time2: " << time2);
+
+    // printToConsole("mSABool " << mSABool);
+    // printToConsole("no conditional " << RotationSensor.position(deg)); //} if (false) { //isolating lady brown for testing
 
     //PID test controls
     /*if (!Controller1.ButtonX.pressing() && !Controller1.ButtonY.pressing()) {
@@ -353,32 +408,34 @@ void usercontrol(void) {
     } else {
       //always drama when I ring
       pressingBool = false;
+      // printToConsole("Pneumatics set to ");
     }
+    printToConsole("Pneumatics set to " <<pneumaticsBool);
 
 
     /*printToConsole("outside checks");
-    if (lbBool && RotationSensor.position(deg) > 17.5) {
+    if (mSABool && RotationSensor.position(deg) > 17.5) {
       printToConsole("brake");
       manlySilverArm.stop(brake);
     }
-    if (lbBool && RotationSensor.position(deg) < 17.5) {
+    if (mSABool && RotationSensor.position(deg) < 17.5) {
         manlySilverArm.spin(forward);
-    } else if (lbBool) {
-      lbBool = false;
+    } else if (mSABool) {
+      mSABool = false;
     }*/
 
 
     if (Controller1.ButtonL1.pressing()) {
       if (RotationSensor.position(deg) < 17.5) {
-          lbBool = true;
+          mSABool = true;
           //manlySilverArm.spin(forward,20,pct);
       }  else {
-        lbBool = false;
+        mSABool = false;
       }
-      if (!lbBool) { manlySilverArm.spin(forward, 100, pct); }
+      if (!mSABool) { manlySilverArm.spin(forward, 100, pct); }
     } else if (Controller1.ButtonL2.pressing()) {
       manlySilverArm.spin(reverse, 100, pct);
-      if (RotationSensor.position(deg) > 17.5) { lbBool = false; }
+      if (RotationSensor.position(deg) > 17.5) { mSABool = false; }
     } else {
       if (RotationSensor.position(deg) < 17.5) manlySilverArm.stop(coast);
       else manlySilverArm.stop(hold);

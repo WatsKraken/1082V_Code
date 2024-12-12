@@ -8,7 +8,7 @@
 
 inline extern vex::brain Brain = vex::brain();
 inline extern vex::motor Fl = vex::motor(vex::PORT6, vex::ratio18_1, true); 
-inline extern vex::motor Fr = vex::motor(vex::PORT5, vex::ratio18_1, false);
+inline extern vex::motor Fr = vex::motor(vex::PORT7, vex::ratio18_1, false);
 inline extern vex::motor Tl = vex::motor(vex::PORT11, vex::ratio18_1, false); //Motor on the left side above the others
 inline extern vex::motor Tr = vex::motor(vex::PORT3, vex::ratio18_1, true); //Motor on the right side above the others
 inline extern vex::motor Bl = vex::motor(vex::PORT2, vex::ratio18_1, true);

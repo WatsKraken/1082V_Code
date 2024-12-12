@@ -44,13 +44,13 @@ public:
 
         error = target - position;
 
-        if (error > 180) {
+        /*if (error > 180) {
             printToConsole(error << " is greater than 180");
             error -= 360;
         } else if (error < -180) {
             printToConsole(error << " is less than -180");
             error += 360;
-        }
+        }*/
 
         
         //std::cout<<abs(target - position)<<std::endl;
@@ -85,6 +85,11 @@ public:
         target = targetVal;
         // std::cout<<position<<std::endl;
         // wait(1, vex::sec);
+        if (target > 180) {
+            target -= 360;
+        } else if (target < -180) {
+            target += 360;
+        }
         while (fabs(target - position) > 2) {
             tpUpdate();
             // std::cout<<"h"<<std::endl;
