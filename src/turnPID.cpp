@@ -23,14 +23,14 @@ public:
     turnPID() {
     }
 
-    /*void reset(vex::motor_group Left, vex::motor_group Right)
+    void reset(vex::motor_group Left, vex::motor_group Right)
     {
         error = 0;
         prev = 0;
         i = 0;
         Left.resetPosition();
         Right.resetPosition();
-    }*/
+    }
 
     
 
@@ -46,7 +46,6 @@ public:
         } else if (error < -180) {
             error += 360;
         }
-
         
         std::cout<<fabs(target - position)<<std::endl;
         // std::cout<<error<<std::endl;

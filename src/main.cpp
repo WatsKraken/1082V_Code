@@ -51,7 +51,7 @@ void pre_auton(void) {
   RotationSensor.resetPosition();
 
   //Set auton number for each time you upload the program
-  autonNum = 10;
+  autonNum = 1;
 }
 
 void spin_for(double time, motor Motor) {
@@ -107,7 +107,7 @@ void autonomous(void) {
   if (autonNum == 1) {
     // Red left
 
-    turnPid.runTurnPID(165);
+    turnPid.runTurnPID(180);
     pid.runPID(-56, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
@@ -128,7 +128,7 @@ void autonomous(void) {
     // pid.runPID(43.2/2);
     // belt.spinFor(2, sec);
     
-    turnPid.runTurnPID(165);
+    turnPid.runTurnPID(180);
     pid.runPID(-56, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
@@ -148,7 +148,7 @@ void autonomous(void) {
     // turnPid.runTurnPID(-33.690067526);
     // pid.runPID(43.2);
     
-    turnPid.runTurnPID(165);
+    turnPid.runTurnPID(180);
     pid.runPID(-56, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
@@ -168,7 +168,7 @@ void autonomous(void) {
     // turnPid.runTurnPID(33.690067526);
     // pid.runPID(43.2/2);
     // belt.spinFor(2, sec);
-    turnPid.runTurnPID(165);
+    turnPid.runTurnPID(180);
     pid.runPID(-56, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
@@ -191,20 +191,23 @@ void autonomous(void) {
     pid.runPID(-6, 2);
     spin_for(1, belt);
     turnPid.runTurnPID(180);
-    pid.runPID(24, 2);
+    pid.runPID(28, 2);
     // belt.spinFor(2,sec);
-    spin_for(2, belt);
+    spin_for(2, belt); 
     // turnPid.runTurnPID(-90);
-    pid.runPID(24, 2);
-    turnPid.runTurnPID(0);
+    pid.runPID(12, 2);
+    spin_for(2, belt); 
+    turnPid.runTurnPID(90);
 
 
     //TEST THIS TO SEE IF IT DOES THEM AT THE SAME TIME
-    spin_for(10, belt);
+    //it doesn't
+    // spin_for(10, belt);
     pid.runPID(36, 2);
 
 
     // belt.spinFor(10,sec);
+    spin_for(2, belt); 
     pid.runPID(-12, 2);
     turnPid.runTurnPID(-90);
     pid.runPID(12, 2);
