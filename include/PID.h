@@ -49,9 +49,5 @@ public:
 
     void stopPID();
 
-    double kpUpdate(double addAmount);
-
-    double kdUpdate(double addAmount);
-
     void runPID(double targetVal, double timeLimit);
 };

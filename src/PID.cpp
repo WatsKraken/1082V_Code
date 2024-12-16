@@ -80,15 +80,15 @@
         printToConsole("cringe");
     }
 
-    double PID::kpUpdate(double addAmount) {
-        kp += addAmount;
-        return kp;
-    }
+    // double PID::kpUpdate(double addAmount) {
+    //     kp += addAmount;
+    //     return kp;
+    // }
 
-    double PID::kdUpdate(double addAmount) {
-        kd += addAmount;
-        return kd;
-    }
+    // double PID::kdUpdate(double addAmount) {
+    //     kd += addAmount;
+    //     return kd;
+    // }
 
     void PID::runPID(double targetVal, double timeLimit)
     {
