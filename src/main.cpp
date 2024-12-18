@@ -97,7 +97,7 @@ void autonomous(void) {
   }
   InertialSensor.resetHeading();
 
-  // wait(3000, msec);
+  wait(1500, msec);
   Brain.Screen.print(autonNum);
   clampPneumatics.set(false);
   // ..........................................................................
@@ -108,10 +108,11 @@ void autonomous(void) {
     // Red left
 
     turnPid.runTurnPID(180);
-    pid.runPID(-56, 2);
+    pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
     spin_for(2, belt);
+    pid.runPID(12,2);
     turnPid.runTurnPID(-90/*.690067526*/);
     pid.runPID(24, 2);
     spin_for(2, belt);
@@ -129,10 +130,11 @@ void autonomous(void) {
     // belt.spinFor(2, sec);
     
     turnPid.runTurnPID(180);
-    pid.runPID(-56, 2);
+    pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
     spin_for(2, belt);
+    pid.runPID(12,2);
     turnPid.runTurnPID(90/*.690067526*/);
     pid.runPID(24, 2);
     spin_for(2, belt);
@@ -149,10 +151,11 @@ void autonomous(void) {
     // pid.runPID(43.2);
     
     turnPid.runTurnPID(180);
-    pid.runPID(-56, 2);
+    pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
     spin_for(2, belt);
+    pid.runPID(12,2);
     turnPid.runTurnPID(-90/*.690067526*/);
     pid.runPID(24, 2);
     spin_for(2, belt);
@@ -169,10 +172,11 @@ void autonomous(void) {
     // pid.runPID(43.2/2);
     // belt.spinFor(2, sec);
     turnPid.runTurnPID(180);
-    pid.runPID(-56, 2);
+    pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
     spin_for(2, belt);
+    pid.runPID(12,2);
     turnPid.runTurnPID(90/*.690067526*/);
     pid.runPID(24, 2);
     spin_for(2, belt);
@@ -249,6 +253,15 @@ void usercontrol(void) {
   bool runTime2 = false;
   RotationSensor.resetPosition();
   manlySilverArm.resetPosition();
+
+                                                                        InertialSensor.calibrate();
+                                                                        while (InertialSensor.isCalibrating()) {
+                                                                            wait(10, vex::msec);
+                                                                        }
+                                                                        InertialSensor.resetHeading();
+
+                                                                        wait(1500, msec);
+
   while (1) {
     manlySilverArm.setPosition(RotationSensor.position(deg), deg);
     if (mSABool) {
@@ -295,10 +308,10 @@ void usercontrol(void) {
       time2 = 0;
     }
 
+    printToConsole(InertialSensor.heading());
 
-
-    printToConsole("time: " << time);
-    printToConsole("time2: " << time2);
+    // printToConsole("time: " << time);
+    // printToConsole("time2: " << time2);
 
     // printToConsole("mSABool " << mSABool);
     // printToConsole("no conditional " << RotationSensor.position(deg)); //} if (false) { //isolating lady brown for testing

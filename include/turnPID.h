@@ -7,6 +7,8 @@
 #include "motors.h"
 #include <iostream>
 
+// #define modPos() (position / fabs(position)) * (fabs(position) + pow(fabs(position/10), 1.3) - fabs(position/10)); //Modified position according to a formula
+
 class turnPID
 {
 
@@ -19,15 +21,15 @@ class turnPID
     int target;
     double kp = 0.5;
     double ki = 0;
-    double kd = 0.3;
+    double kd = 0.5;
     double drive;
-    void runTurnPID();
     double prev;
 
 public:
     turnPID();
     void reset();
     void tpUpdate();
+    void stopTurnPID();
     void runTurnPID(double targetVal/*, vex::motor_group Left, vex::motor_group Right*/);
 };
 

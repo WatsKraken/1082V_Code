@@ -19,7 +19,6 @@
         Right.resetPosition();
     }*/
 
-    
 
     void turnPID::tpUpdate()
     {
@@ -38,7 +37,8 @@
 
         
         //std::cout<<abs(target - position)<<std::endl;
-        printToConsole(error);
+        // printToConsole(error);
+        printToConsole((kp * (target - pow(position, 1.3))) + (ki * i) + (kd * d));
         // std::cout<<error<<std::endl;
 
         Brain.Screen.clearLine();
@@ -50,6 +50,7 @@
         if (error / fabs(error) != prev / fabs(prev))
         {
             i = 0;
+            
         }
 
         if (fabs(i) >= 100)
@@ -58,6 +59,15 @@
         }
         
 
+    }
+
+
+    void turnPID::stopTurnPID() {
+        Left.stop(vex::brake);
+        Right.stop(vex::brake);
+        Left.setStopping(vex::coast);
+        Right.setStopping(vex::coast);
+        printToConsole("turn PID stopped");
     }
 
     void turnPID::runTurnPID(double targetVal/*, vex::motor_group Left, vex::motor_group Right*/)
@@ -74,13 +84,13 @@
         } else if (target < -180) {
             target += 360;
         }
-        while (fabs(target - position) > 8) {
+        while (fabs(target - position) > 10) {
             tpUpdate();
             // std::cout<<"h"<<std::endl;
             // std::cout<<position<<std::endl;
             //spinAll(true, (kp * error) + (ki * i) + (kd * d));
-            Left.spin(vex::forward, (kp * error) + (ki * i) + (kd * d), vex::pct);
-            Right.spin(vex::reverse, (kp * error) + (ki * i)  + (kd * d), vex::pct);
+            Left.spin(vex::forward, (kp * (target -  (position / fabs(position)) * (fabs(position) + pow(fabs(position/10), 1.3) - fabs(position/10))  )) + (ki * i) + (kd * d), vex::pct);
+            Right.spin(vex::reverse, (kp * (target -  (position / fabs(position)) * (fabs(position) + pow(fabs(position/10), 1.3) - fabs(position/10))  )) + (ki * i)  + (kd * d), vex::pct);
             // tpUpdate();
 
             if (position > 360) {
@@ -95,9 +105,15 @@
                 break;
             }
 
-            // if (fabs(target - position) <= 4) {
-            //     error /= 2;
-            // }
+            if (fabs((kp * error) + (ki * i) + (kd * d)) < 1) {
+                printToConsole("Too slow; saving time");
+                stopTurnPID();
+                break;
+            }
+
+            if (fabs(target - position) <= 16) { //Trying to slow it down
+                error /= 2;
+            }
         } 
         Left.stop(vex::brake);
         Right.stop(vex::brake);
