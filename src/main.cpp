@@ -95,9 +95,9 @@ void autonomous(void) {
   while (InertialSensor.isCalibrating()) {
       wait(10, vex::msec);
   }
-  InertialSensor.resetHeading();
 
   wait(1500, msec);
+  InertialSensor.setHeading(-120, deg);
   Brain.Screen.print(autonNum);
   clampPneumatics.set(false);
   // ..........................................................................
@@ -107,8 +107,8 @@ void autonomous(void) {
   if (autonNum == 1) {
     // Red left
 
-    turnPid.runTurnPID(180);
-    pid.runPID(-36, 2);
+    
+    pid.runPID(-34, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
     spin_for(2, belt);
