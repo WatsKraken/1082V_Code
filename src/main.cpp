@@ -254,13 +254,13 @@ void usercontrol(void) {
   RotationSensor.resetPosition();
   manlySilverArm.resetPosition();
 
-                                                                        InertialSensor.calibrate();
+                                                                        /*InertialSensor.calibrate();
                                                                         while (InertialSensor.isCalibrating()) {
                                                                             wait(10, vex::msec);
                                                                         }
                                                                         InertialSensor.resetHeading();
 
-                                                                        wait(1500, msec);
+                                                                        wait(1500, msec);*/
 
   while (1) {
     manlySilverArm.setPosition(RotationSensor.position(deg), deg);
@@ -426,7 +426,7 @@ void usercontrol(void) {
       pressingBool = false;
       // printToConsole("Pneumatics set to ");
     }
-    printToConsole("Pneumatics set to " <<pneumaticsBool);
+    // printToConsole("Pneumatics set to " <<pneumaticsBool);
 
 
     /*printToConsole("outside checks");

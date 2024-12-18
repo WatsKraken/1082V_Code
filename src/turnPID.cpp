@@ -84,13 +84,13 @@
         } else if (target < -180) {
             target += 360;
         }
-        while (fabs(target - position) > 10) {
+        while (fabs(target - position) > 7) {
             tpUpdate();
             // std::cout<<"h"<<std::endl;
             // std::cout<<position<<std::endl;
             //spinAll(true, (kp * error) + (ki * i) + (kd * d));
-            Left.spin(vex::forward, (kp * (target -  (position / fabs(position)) * (fabs(position) + pow(fabs(position/10), 1.3) - fabs(position/10))  )) + (ki * i) + (kd * d), vex::pct);
-            Right.spin(vex::reverse, (kp * (target -  (position / fabs(position)) * (fabs(position) + pow(fabs(position/10), 1.3) - fabs(position/10))  )) + (ki * i)  + (kd * d), vex::pct);
+            Left.spin(vex::forward, ((kp * error) + (ki * i) + (kd * d)) * 0.5, vex::pct);
+            Right.spin(vex::reverse, ((kp * error) + (ki * i) + (kd * d)) * 0.5, vex::pct);
             // tpUpdate();
 
             if (position > 360) {
@@ -105,7 +105,7 @@
                 break;
             }
 
-            if (fabs((kp * error) + (ki * i) + (kd * d)) < 1) {
+            if (fabs((kp * (target -  (position / fabs(position)) * (fabs(position) + pow(fabs(position/10), 1.3) - fabs(position/10))  )) + (ki * i) + (kd * d)) < 1) {
                 printToConsole("Too slow; saving time");
                 stopTurnPID();
                 break;

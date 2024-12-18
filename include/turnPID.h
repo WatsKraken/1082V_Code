@@ -7,7 +7,6 @@
 #include "motors.h"
 #include <iostream>
 
-// #define modPos() (position / fabs(position)) * (fabs(position) + pow(fabs(position/10), 1.3) - fabs(position/10)); //Modified position according to a formula
 
 class turnPID
 {
