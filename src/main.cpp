@@ -51,7 +51,7 @@ void pre_auton(void) {
   RotationSensor.resetPosition();
 
   //Set auton number for each time you upload the program
-  autonNum = 1;
+  autonNum = 5;
 }
 
 void spin_for(double time, motor Motor) {
@@ -98,6 +98,8 @@ void autonomous(void) {
   InertialSensor.resetHeading();
 
   wait(1500, msec);
+  InertialSensor.setHeading(-120, deg);
+  
   Brain.Screen.print(autonNum);
   clampPneumatics.set(false);
   // ..........................................................................
@@ -107,7 +109,7 @@ void autonomous(void) {
   if (autonNum == 1) {
     // Red left
 
-    turnPid.runTurnPID(180);
+    // turnPid.runTurnPID(180);
     pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
@@ -129,7 +131,7 @@ void autonomous(void) {
     // pid.runPID(43.2/2);
     // belt.spinFor(2, sec);
     
-    turnPid.runTurnPID(180);
+    // turnPid.runTurnPID(180);
     pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
@@ -150,7 +152,7 @@ void autonomous(void) {
     // turnPid.runTurnPID(-33.690067526);
     // pid.runPID(43.2);
     
-    turnPid.runTurnPID(180);
+    // turnPid.runTurnPID(180);
     pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
@@ -171,7 +173,7 @@ void autonomous(void) {
     // turnPid.runTurnPID(33.690067526);
     // pid.runPID(43.2/2);
     // belt.spinFor(2, sec);
-    turnPid.runTurnPID(180);
+    // turnPid.runTurnPID(180);
     pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
@@ -222,7 +224,10 @@ void autonomous(void) {
     // wait(4, sec);
     // Left.spinFor(1, sec);
     // Right.spinFor(1, sec);
-    pid.runPID(3, 2);
+    pid.runPID(24, 2);
+    turnPid.runTurnPID(60);
+    turnPid.runTurnPID(120);
+    turnPid.runTurnPID(150);
   }
 }
 
@@ -244,7 +249,7 @@ void usercontrol(void) {
   double slow = 1;
   bool pneumaticsBool = false;
   bool pressingBool = false;
-  int distance = 0;
+  // int distance = 0;  //used for PID testing
   bool mSABool = false;
   bool ready = false;
   int time = 0;
@@ -308,7 +313,7 @@ void usercontrol(void) {
       time2 = 0;
     }
 
-    printToConsole(InertialSensor.heading());
+    // printToConsole(InertialSensor.heading());
 
     // printToConsole("time: " << time);
     // printToConsole("time2: " << time2);

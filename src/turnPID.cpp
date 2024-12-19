@@ -37,8 +37,8 @@
 
         
         //std::cout<<abs(target - position)<<std::endl;
-        // printToConsole(error);
-        printToConsole((kp * (target - pow(position, 1.3))) + (ki * i) + (kd * d));
+        printToConsole(error);
+        // printToConsole((kp * error) + (ki * i) + (kd * d));
         // std::cout<<error<<std::endl;
 
         Brain.Screen.clearLine();
@@ -102,10 +102,12 @@
             time += 20;
             vex::wait(20, vex::msec);
             if (time >= 2000) {
+                printToConsole("Time Limit Reached");
+                stopTurnPID();
                 break;
             }
 
-            if (fabs((kp * (target -  (position / fabs(position)) * (fabs(position) + pow(fabs(position/10), 1.3) - fabs(position/10))  )) + (ki * i) + (kd * d)) < 1) {
+            if (fabs((kp * error) + (ki * i) + (kd * d)) < 1) {
                 printToConsole("Too slow; saving time");
                 stopTurnPID();
                 break;
