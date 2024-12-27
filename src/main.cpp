@@ -51,7 +51,7 @@ void pre_auton(void) {
   RotationSensor.resetPosition();
 
   //Set auton number for each time you upload the program
-  autonNum = 5;
+  autonNum = 10;
 }
 
 void spin_for(double time, motor Motor) {
@@ -95,10 +95,8 @@ void autonomous(void) {
   while (InertialSensor.isCalibrating()) {
       wait(10, vex::msec);
   }
-  InertialSensor.resetHeading();
 
   wait(1500, msec);
-  InertialSensor.setHeading(-120, deg);
   
   Brain.Screen.print(autonNum);
   clampPneumatics.set(false);
@@ -107,21 +105,15 @@ void autonomous(void) {
   // ..........................................................................
   spin_for(0.5, belt);
   if (autonNum == 1) {
+    InertialSensor.setHeading(210, degrees);
     // Red left
-
-    // turnPid.runTurnPID(180);
-    pid.runPID(-36, 2);
+    pid.runPID(-34.5, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
-    spin_for(2, belt);
-    pid.runPID(12,2);
-    turnPid.runTurnPID(-90/*.690067526*/);
+    belt.spin(fwd, 100, pct);
+    pid.runPID(-5,2);
+    turnPid.runTurnPID(270/*.690067526*/);
     pid.runPID(24, 2);
-    spin_for(2, belt);
-    turnPid.runTurnPID(90);
-    pid.runPID(24, 2);
-    turnPid.runTurnPID(135);
-    pid.runPID(24 * sqrt(2), 2);
     // pid.runPID(2 * sqrt(10), 2);
     Brain.Screen.print("Auton 1 (Red Left) completed.");
 
@@ -129,21 +121,16 @@ void autonomous(void) {
     // Red right
     // turnPid.runTurnPID(33.690067526);
     // pid.runPID(43.2/2);
-    // belt.spinFor(2, sec);
-    
-    // turnPid.runTurnPID(180);
-    pid.runPID(-36, 2);
+    // belt.spinFor(2, sec)
+    InertialSensor.setHeading(150, degrees);
+    pid.runPID(-34, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
-    spin_for(2, belt);
-    pid.runPID(12,2);
+    belt.spin(fwd, 100, pct);
+    pid.runPID(-5,2);
     turnPid.runTurnPID(90/*.690067526*/);
     pid.runPID(24, 2);
     spin_for(2, belt);
-    turnPid.runTurnPID(-90);
-    pid.runPID(24, 2);
-    turnPid.runTurnPID(-135);
-    pid.runPID(24 * sqrt(2), 2);
     Brain.Screen.print("Auton 2 (Red Right) completed.");
     
 
@@ -151,21 +138,14 @@ void autonomous(void) {
     // Blue left
     // turnPid.runTurnPID(-33.690067526);
     // pid.runPID(43.2);
-    
-    // turnPid.runTurnPID(180);
-    pid.runPID(-36, 2);
+    InertialSensor.setHeading(210, degrees);
+    pid.runPID(-34, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
-    spin_for(2, belt);
-    pid.runPID(12,2);
-    turnPid.runTurnPID(-90/*.690067526*/);
+    belt.spin(fwd, 100, pct);
+    pid.runPID(-5,2);
+    turnPid.runTurnPID(270/*.690067526*/);
     pid.runPID(24, 2);
-    spin_for(2, belt);
-    turnPid.runTurnPID(90);
-    pid.runPID(24, 2);
-    turnPid.runTurnPID(135);
-    pid.runPID(24 * sqrt(2), 2);
-
     Brain.Screen.print("Auton 3 (Blue Left) completed.");
 
   } else if (autonNum == 4) {
@@ -173,58 +153,65 @@ void autonomous(void) {
     // turnPid.runTurnPID(33.690067526);
     // pid.runPID(43.2/2);
     // belt.spinFor(2, sec);
-    // turnPid.runTurnPID(180);
-    pid.runPID(-36, 2);
+    InertialSensor.setHeading(150, degrees);
+    pid.runPID(-32, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
-    spin_for(2, belt);
-    pid.runPID(12,2);
-    turnPid.runTurnPID(90/*.690067526*/);
-    pid.runPID(24, 2);
-    spin_for(2, belt);
-    turnPid.runTurnPID(-90);
-    pid.runPID(24, 2);
-    turnPid.runTurnPID(-135);
-    pid.runPID(24 * sqrt(2), 2);
-
-    // turnPid.runTurnPID(153.4349488);
-    // pid.runPID(2 * sqrt(10));
+    belt.spin(fwd,100,pct);
+    pid.runPID(-5,2);
+    turnPid.runTurnPID(60/*.690067526*/);
+    pid.runPID(24,2);
+    pid.runPID(-10,2);
+    
     Brain.Screen.print("Auton 4 (Blue Right) completed.");
+
   } else if (autonNum == 10) {
     //set up backwards
-    pid.runPID(-6, 2);
+  
+    InertialSensor.setHeading(0, degrees);
     clampPneumatics.set(true);
-    pid.runPID(-6, 2);
-    spin_for(1, belt);
-    turnPid.runTurnPID(180);
-    pid.runPID(28, 2);
-    // belt.spinFor(2,sec);
-    spin_for(2, belt); 
-    // turnPid.runTurnPID(-90);
-    pid.runPID(12, 2);
-    spin_for(2, belt); 
+    pid.runPID(-7, 1);
+    belt.spin(fwd, 100, pct);
+    wait(500, msec);
+    belt.stop(hold);
+    clampPneumatics.set(false);
+    pid.runPID(15,2);
     turnPid.runTurnPID(90);
-
-
-    //TEST THIS TO SEE IF IT DOES THEM AT THE SAME TIME
-    //it doesn't
-    // spin_for(10, belt);
-    pid.runPID(36, 2);
-
-
-    // belt.spinFor(10,sec);
-    spin_for(2, belt); 
-    pid.runPID(-12, 2);
-    turnPid.runTurnPID(-90);
-    pid.runPID(12, 2);
-    turnPid.runTurnPID(180+26.5650511771);
-    pid.runPID(-12, 2);
+    pid.runPID(-15,2);
     clampPneumatics.set(true);
+    turnPid.runTurnPID(0);
+    pid.runPID(11,2);
+    belt.spin(fwd, 100, pct);
+    turnPid.runTurnPID(-90);
+    pid.runPID(9,2);
+    pid.runPID(-3,1);
+    turnPid.runTurnPID(-90);
+    pid.runPID(12,2);
+    pid.runPID(8,2);
+    turnPid.runTurnPID(-100);
+    pid.runPID(24,2);
+    belt.stop(hold);
+    clampPneumatics.set(false);
+    pid.runPID(7, 2);
+    turnPid.runTurnPID(80);
+    pid.runPID(6,2);
+    spin_for(0.5,belt);
+    turnPid.runTurnPID(90);
+    pid.runPID(64,2);    
+    clampPneumatics.set(true);
+    belt.spin(fwd, 100, pct);
+    turnPid.runTurnPID(180);
+    pid.runPID(12,2);
+    pid.runPID(9,2);
+    pid.runPID(6,2);
+    turnPid.runTurnPID(90);
+    pid.runPID(16,2);
+    belt.stop(hold);
+    clampPneumatics.set(false);
+    pid.runPID(8,2);
+
   } else if (autonNum == 5) {
-    // wait(4, sec);
-    // Left.spinFor(1, sec);
-    // Right.spinFor(1, sec);
-    pid.runPID(24, 2);
+   pid.runPID(24, 2);
     turnPid.runTurnPID(60);
     turnPid.runTurnPID(120);
     turnPid.runTurnPID(150);
@@ -249,7 +236,7 @@ void usercontrol(void) {
   double slow = 1;
   bool pneumaticsBool = false;
   bool pressingBool = false;
-  // int distance = 0;  //used for PID testing
+  int distance = 0;
   bool mSABool = false;
   bool ready = false;
   int time = 0;
@@ -313,7 +300,7 @@ void usercontrol(void) {
       time2 = 0;
     }
 
-    // printToConsole(InertialSensor.heading());
+    printToConsole(InertialSensor.heading());
 
     // printToConsole("time: " << time);
     // printToConsole("time2: " << time2);
