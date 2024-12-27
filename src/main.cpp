@@ -95,8 +95,10 @@ void autonomous(void) {
   while (InertialSensor.isCalibrating()) {
       wait(10, vex::msec);
   }
+  InertialSensor.resetHeading();
 
   wait(1500, msec);
+  InertialSensor.setHeading(-120, deg);
   
   Brain.Screen.print(autonNum);
   clampPneumatics.set(false);
@@ -107,7 +109,9 @@ void autonomous(void) {
   if (autonNum == 1) {
     InertialSensor.setHeading(210, degrees);
     // Red left
-    pid.runPID(-34.5, 2);
+    pid.runPID(-34, 2);
+    // turnPid.runTurnPID(180);
+    //pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
     belt.spin(fwd, 100, pct);
@@ -121,9 +125,12 @@ void autonomous(void) {
     // Red right
     // turnPid.runTurnPID(33.690067526);
     // pid.runPID(43.2/2);
+
     // belt.spinFor(2, sec)
     InertialSensor.setHeading(150, degrees);
     pid.runPID(-34, 2);
+    // turnPid.runTurnPID(180);
+    //pid.runPID(-36, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
     belt.spin(fwd, 100, pct);
@@ -138,6 +145,7 @@ void autonomous(void) {
     // Blue left
     // turnPid.runTurnPID(-33.690067526);
     // pid.runPID(43.2);
+
     InertialSensor.setHeading(210, degrees);
     pid.runPID(-34, 2);
     // turnPid.runTurnPID(150);
@@ -154,7 +162,7 @@ void autonomous(void) {
     // pid.runPID(43.2/2);
     // belt.spinFor(2, sec);
     InertialSensor.setHeading(150, degrees);
-    pid.runPID(-32, 2);
+    pid.runPID(-34, 2);
     // turnPid.runTurnPID(150);
     clampPneumatics.set(true);
     belt.spin(fwd,100,pct);
@@ -211,7 +219,7 @@ void autonomous(void) {
     pid.runPID(8,2);
 
   } else if (autonNum == 5) {
-   pid.runPID(24, 2);
+    pid.runPID(24, 2);
     turnPid.runTurnPID(60);
     turnPid.runTurnPID(120);
     turnPid.runTurnPID(150);
@@ -236,7 +244,7 @@ void usercontrol(void) {
   double slow = 1;
   bool pneumaticsBool = false;
   bool pressingBool = false;
-  int distance = 0;
+  // int distance = 0;  //used for PID testing
   bool mSABool = false;
   bool ready = false;
   int time = 0;
@@ -300,7 +308,7 @@ void usercontrol(void) {
       time2 = 0;
     }
 
-    printToConsole(InertialSensor.heading());
+    // printToConsole(InertialSensor.heading());
 
     // printToConsole("time: " << time);
     // printToConsole("time2: " << time2);

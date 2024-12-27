@@ -18,9 +18,9 @@ class turnPID
     double i; // integral
     double d;
     int target;
-    double kp = 0.5;
+    double kp = 0.7;
     double ki = 0;
-    double kd = 0.5;
+    double kd = 0.15;
     double drive;
     double prev;
 
